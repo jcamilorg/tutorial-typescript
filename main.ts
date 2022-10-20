@@ -4,7 +4,7 @@ import { Curso } from "./curso.js";
 let cursos = [
   new Curso("Agilismo", 60, 93, true, 2022),
   new Curso("Arquitectura", 60, 97, true, 2022),
-  new Curso("Ingnieria de SW para la Web", 80, 100, false, 2022),
+  new Curso("Ingenieria de SW para la Web", 80, 100, false, 2022),
   new Curso("Pruebas automatizadas", 80, 100, false, 2022),
 ];
 
@@ -21,10 +21,25 @@ console.log(ap.cursos);
 
 let $aprendizTable: HTMLElement = document.getElementById("aprendiz")!;
 let $estadisticasTable: HTMLElement = document.getElementById("estadisticas")!;
+let $CursosTable: HTMLElement = document.getElementById("cursos")!;
+let $btnFiltro: HTMLElement = document.getElementById("boton-filtro")!;
+let $textoBusqueda: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById("texto-busqueda")!
+);
+
+$btnFiltro.onclick = filtrarPorNombre;
 
 mostrarDatosAprendiz(ap);
-
 mostrarEstadisticas(ap);
+mostrarCursos(ap.cursos);
+
+function filtrarPorNombre(): void {
+  let text: string = $textoBusqueda.value;
+  text = text ? text : "";
+  $CursosTable.getElementsByTagName("tbody")[0].remove();
+  let cursos: Curso[] = ap.cursos.filter((c) => c.nombre.match(text));
+  mostrarCursos(cursos);
+}
 
 function mostrarDatosAprendiz(aprendiz: Aprendiz): void {
   let tbody = document.createElement("tbody");
@@ -42,4 +57,19 @@ function mostrarEstadisticas(aprendiz: Aprendiz): void {
   let tr: HTMLElement = document.createElement("tr");
   tr.innerHTML = `<td><b>Cursos certificados: </b></td><td>${numeroCertificados}</td>`;
   $estadisticasTable.appendChild(tr);
+}
+
+function mostrarCursos(cursos: Curso[]): void {
+  let tbody: HTMLElement = document.createElement("tbody");
+  for (let curso of cursos) {
+    let tr: HTMLElement = document.createElement("tr");
+    tr.innerHTML = `
+    <td>${curso.nombre}</td>
+    <td>${curso.horas}</td>
+    <td>${curso.calificacion}</td>
+    <td>${curso.certificado}</td>
+    <td>${curso.anio}</td>`;
+    tbody.appendChild(tr);
+  }
+  $CursosTable.appendChild(tbody);
 }
